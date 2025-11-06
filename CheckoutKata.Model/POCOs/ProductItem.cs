@@ -6,9 +6,12 @@ namespace CheckoutKata.Model.POCOs;
 public class ProductItem
 {
     /// <summary>
-    /// 
+    ///     Stock control unit code
     /// </summary>
     public string Sku { get; set; } = null!;
-    public decimal UnitPrice { get; set; }
 
+    /// <summary>
+    ///     The price of the product item
+    /// </summary>
+    public decimal UnitPrice { get; set; }
 }
