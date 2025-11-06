@@ -17,4 +17,9 @@ public interface ICheckoutService
     /// </summary>
     /// <returns></returns>
     decimal GetTotalPrice();
+
+    /// <summary>
+    ///     Clears basket after usage
+    /// </summary>
+    void Clear();
 }
