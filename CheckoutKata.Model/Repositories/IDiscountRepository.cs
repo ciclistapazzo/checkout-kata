@@ -12,5 +12,5 @@ public interface IDiscountRepository
     ///     Gets the discounts
     /// </summary>
     /// <returns>List of discounts</returns>
-    Task<List<IRequest<DiscountRequest>>> GetDiscountsAsync();
+    Task<List<Discount>?> GetDiscountsAsync();
 }

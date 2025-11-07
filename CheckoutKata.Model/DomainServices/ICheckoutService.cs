@@ -16,7 +16,7 @@ public interface ICheckoutService
     ///     Gets the total price of the basket
     /// </summary>
     /// <returns></returns>
-    decimal GetTotalPrice();
+    Task<decimal> GetTotalPrice();
 
     /// <summary>
     ///     Clears basket after usage

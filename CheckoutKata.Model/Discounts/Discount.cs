@@ -1,11 +1,9 @@
 using CheckoutKata.Model.POCOs;
+using MediatR;
 
 namespace CheckoutKata.Model.Discounts;
 
-/// <summary>
-///     Information required to perform a discount
-/// </summary>
-public class DiscountRequest
+public class Discount : IRequest<DiscountResponse>
 {
     /// <summary>
     ///     Name of discount eg. Buy multiple for one price

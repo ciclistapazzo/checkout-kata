@@ -13,7 +13,7 @@ public class CheckoutService : ICheckoutService
     private readonly IDiscountRepository _discountRepository;
     private readonly IMediator _mediator;
     private readonly IProductItemRepository _productItemRepository;
-    private List<IRequest<DiscountRequest>>? _discounts;
+    private List<Discount>? _discounts;
 
     /// <summary>
     ///     Initalizes an instance of a <see cref="CheckoutService" />
@@ -36,13 +36,22 @@ public class CheckoutService : ICheckoutService
         if (_discounts is null || _basket.Count == 0) _discounts = await _discountRepository.GetDiscountsAsync();
         var productItem = await _productItemRepository.GetProductItemAsync(sku);
         if (productItem is null) throw new ProductNotFoundException { Sku = sku };
-        _basket.Add(new ProductItem());
+        _basket.Add(productItem);
     }
 
     /// <inheritdoc />
-    public decimal GetTotalPrice()
+    public async Task<decimal> GetTotalPrice()
     {
-        throw new NotImplementedException();
+        var currentBasket = _basket;
+        if (_discounts != null)
+            foreach (var discount in _discounts)
+            {
+                discount.ProductItems = currentBasket;
+                var response = await _mediator.Send(discount);
+                currentBasket = response.ProductItems;
+            }
+
+        return currentBasket.Sum(i => i.UnitPrice);
     }
 
     /// <inheritdoc />

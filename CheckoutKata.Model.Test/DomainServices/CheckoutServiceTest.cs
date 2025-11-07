@@ -29,7 +29,7 @@ public class CheckoutServiceTest
         var mediatorMock = new Mock<IMediator>();
         var discountRepositoryMock = new Mock<IDiscountRepository>();
         var discountRequest = new BuyXOnePriceDiscount();
-        discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync(new List<IRequest<DiscountRequest>>
+        discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync(new List<Discount>
             { discountRequest });
         var productItemRepositoryMock = new Mock<IProductItemRepository>();
 
@@ -37,8 +37,45 @@ public class CheckoutServiceTest
         var checkoutService = new CheckoutService(mediatorMock.Object, discountRepositoryMock.Object,
             productItemRepositoryMock.Object);
         await checkoutService.ScanAsync("A");
-        checkoutService.GetTotalPrice();
+        await checkoutService.GetTotalPrice();
         mediatorMock.Verify(m => m.Send(It.IsAny<BuyXOnePriceDiscount>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    /// <summary>
+    ///     Confirms that when GetTotalPrice is called and there are no discounts then it simple returns the sum of the basket.
+    /// </summary>
+    [Fact]
+    public async Task CheckoutService_GetTotalPrice_NoDiscounts_JustPriceOfBasketReturned()
+    {
+        var firstProductItem = new ProductItem
+        {
+            Sku = "A",
+            UnitPrice = 50.00m
+        };
+        var secondProductItem = new ProductItem
+        {
+            Sku = "B",
+            UnitPrice = 33.00m
+        };
+       
+        var mediatorMock = new Mock<IMediator>();
+        var discountRepositoryMock = new Mock<IDiscountRepository>();
+        // Arrange
+        discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync((List<Discount>?)null);
+        var productItemRepositoryMock = new Mock<IProductItemRepository>();
+
+        productItemRepositoryMock.Setup(p => p.GetProductItemAsync(It.Is<string>(v => v =="A"))).ReturnsAsync(firstProductItem);
+        productItemRepositoryMock.Setup(p => p.GetProductItemAsync("B")).ReturnsAsync(secondProductItem);
+        
+        var checkoutService = new CheckoutService(mediatorMock.Object, discountRepositoryMock.Object,
+            productItemRepositoryMock.Object);
+        // Act
+        await checkoutService.ScanAsync("A");
+        await checkoutService.ScanAsync("B");
+        await checkoutService.ScanAsync("A");
+        var totalPrice = await checkoutService.GetTotalPrice();
+        // Assert
+        Assert.Equal(133.00m, totalPrice);
     }
 
     #endregion
@@ -70,7 +107,7 @@ public class CheckoutServiceTest
         var sku1 = "A";
         var sku2 = "B";
         var discountRepositoryMock = new Mock<IDiscountRepository>();
-        discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync(new List<IRequest<DiscountRequest>>
+        discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync(new List<Discount>
             { new BuyXOnePriceDiscount() });
         var productItemRepositoryMock = new Mock<IProductItemRepository>();
         productItemRepositoryMock.Setup(p => p.GetProductItemAsync(It.IsAny<string>())).ReturnsAsync(new ProductItem());
