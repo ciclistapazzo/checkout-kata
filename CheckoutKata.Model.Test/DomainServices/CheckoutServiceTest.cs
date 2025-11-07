@@ -27,6 +27,16 @@ public class CheckoutServiceTest
             UnitPrice = 50.00m
         };
         var mediatorMock = new Mock<IMediator>();
+        mediatorMock.Setup(m =>
+                m.Send(It.IsAny<BuyXOnePriceDiscount>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new DiscountResponse
+                {
+                    ProductItems = new List<ProductItem>
+                    {
+                       firstProductItem
+                    }
+                });
         var discountRepositoryMock = new Mock<IDiscountRepository>();
         var discountRequest = new BuyXOnePriceDiscount();
         discountRepositoryMock.Setup(d => d.GetDiscountsAsync()).ReturnsAsync(new List<Discount>
