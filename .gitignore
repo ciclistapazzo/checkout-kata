@@ -338,3 +338,6 @@ _Pvt_Extensions
 
 # Rider stuff
 .idea
+
+# Mac stuff
+.DS_Store
