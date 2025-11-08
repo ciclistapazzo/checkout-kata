@@ -52,8 +52,28 @@ public class BuyXOnePriceDiscountHandlerTest
         };
         var secondProductItem = new ProductItem
         {
+            Sku = "A",
+            UnitPrice = 50.00m
+        };
+        var thirdProductItem = new ProductItem
+        {
             Sku = "B",
             UnitPrice = 30.00m
+        };
+        var fourthProductItem = new ProductItem
+        {
+            Sku = "A",
+            UnitPrice = 50.00m
+        };
+        var fifthProductItem = new ProductItem
+        {
+            Sku = "B",
+            UnitPrice = 30.00m
+        };
+        var sixthProductItem = new ProductItem
+        {
+            Sku = "A",
+            UnitPrice = 50.00m
         };
         var buyXOnePriceDiscount = new BuyXOnePriceDiscount
         {
@@ -64,11 +84,11 @@ public class BuyXOnePriceDiscountHandlerTest
             ProductItems = new List<ProductItem>
             {
                 firstProductItem,
-                firstProductItem,
                 secondProductItem,
-                firstProductItem,
-                secondProductItem,
-                firstProductItem
+                thirdProductItem,
+                fourthProductItem,
+                fifthProductItem,
+                sixthProductItem
             }
         };
         var handler = new BuyXOnePriceDiscountHandler();
